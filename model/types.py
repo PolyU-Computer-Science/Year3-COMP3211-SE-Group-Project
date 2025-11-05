@@ -1,0 +1,64 @@
+from __future__ import annotations
+from dataclasses import dataclass
+from enum import Enum
+from typing import Optional, Tuple
+
+
+class Player(Enum):
+    P1 = 1  # Bottom side / Red
+    P2 = 2  # Top side / Blue
+
+    def opponent(self) -> "Player":
+        return Player.P1 if self == Player.P2 else Player.P2
+
+
+class Animal(Enum):
+    RAT = 1
+    CAT = 2
+    DOG = 3
+    WOLF = 4
+    LEOPARD = 5
+    TIGER = 6
+    LION = 7
+    ELEPHANT = 8
+
+    @property
+    def rank(self) -> int:
+        return self.value
+
+
+class SquareType(Enum):
+    LAND = 0
+    RIVER = 1
+    TRAP_P1 = 2
+    TRAP_P2 = 3
+    DEN_P1 = 4
+    DEN_P2 = 5
+
+
+@dataclass
+class Piece:
+    animal: Animal
+    owner: Player
+    x: int
+    y: int
+
+    def pos(self) -> Tuple[int, int]:
+        return (self.x, self.y)
+
+    def set_pos(self, p: Tuple[int, int]) -> None:
+        self.x, self.y = p
+
+    @property
+    def rank(self) -> int:
+        return self.animal.rank
+
+
+@dataclass
+class Move:
+    player: Player
+    from_pos: Tuple[int, int]
+    to_pos: Tuple[int, int]
+    moved_animal: Animal
+    captured: Optional[Piece] = None
+    note: str = ""

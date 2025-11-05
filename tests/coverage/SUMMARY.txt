@@ -1,0 +1,1 @@
+Line coverage summary for model/*
