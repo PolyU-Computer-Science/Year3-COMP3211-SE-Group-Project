@@ -1,43 +1,7 @@
-# OS-specific
-.DS_Store
-Thumbs.db
-Desktop.ini
-
-# Python cache/build artifacts
 __pycache__/
-*.py[cod]
-*.pyo
-*.pyd
-*.so
-*.egg-info/
-*.egg
-.eggs/
-build/
-dist/
-pip-wheel-metadata/
-
-# Virtual environments
-.venv/
-venv/
-env/
-ENV/
-
-# IDE/editor
-.vscode/
-.idea/
-*~
-*.swp
-*.swo
-
-# Type check / test caches
-.mypy_cache/
-.pytest_cache/
-
-# Coverage outputs (stdlib trace & common tools)
-tests/coverage/
+*.pyc
 .coverage
 htmlcov/
-
-# Media (store large files with Git LFS instead)
-video/*.mp4
-video/*.mov
+docs/coverage/
+*.jungle
+*.record

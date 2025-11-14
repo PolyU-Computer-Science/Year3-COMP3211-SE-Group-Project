@@ -1,76 +1,60 @@
-# Software Requirements Specification (SRS) — Jungle CLI Game
-
-Version: 1.0 — 2025-11-05
+# Software Requirements Specification (SRS)
 
 ## 1. Introduction
-- Purpose: Provide a CLI Jungle game implementation for COMP3211 course project with separated model and unit tests.
-- Scope: Two-player local CLI, no GUI/online features. Obeys Appendix B rules. Supports user stories US1–US10 from Appendix C.
+- **Purpose**: Define the functional and non-functional requirements for the COMP3211 Jungle (Dou Shou Qi) command-line game.
+- **Scope**: Two-player, turn-based CLI game with save/load, record/replay, and undo functionality. Implementation is limited to the command line per the assignment brief.
+- **Definitions/Abbreviations**:
+  - **CLI** – Command-Line Interface
+  - **Undo Credit** – Consumable allowance permitting a player to revert the most recent move (max three per player per game)
+  - **Record File** – `.record` JSON file containing player metadata and chronological move list
+  - **Save File** – `.jungle` JSON file containing the complete game snapshot
 
 ## 2. Overall Description
-- Product perspective: Standalone Python program; standard library only.
-- Users: Two human players sharing one console.
-- Constraints: No third-party libs in implementation; Windows primary platform.
-- Assumptions: Players enter valid commands as documented; filenames are accessible.
+- **Product Perspective**: Standalone Python application following a lightweight MVC structure – `model` for game logic, `cli` for presentation.
+- **User Classes**:
+  - Primary players (two human users sharing the terminal)
+  - Teaching staff (for grading, replay, and verification)
+- **Operating Environment**: Windows/macOS/Linux terminal with Python 3.11+.
+- **Design Constraints**: Standard library only at runtime; model code must reside in `model` package; no GUI or network play.
+- **Assumptions**: Players alternate moves without time controls; file system is accessible for saves/records; users are familiar with Dou Shou Qi basics.
 
-## 3. System Features (Functional Requirements)
-F1. Start new game (US1)
-- FR-1.1: System initializes board to standard layout and sets current player to P1.
+## 3. Functional Requirements
+| ID | Description | Acceptance Criteria | Source |
+|----|-------------|---------------------|--------|
+| FR-1 | Start a new Jungle game with optional player names. | `new [blue] [red]` initializes board, resets undo credits. | US1, US3 |
+| FR-2 | End the current session gracefully. | `quit` command terminates without corrupting data. | US2 |
+| FR-3 | Provide a text-based interface for all interactions. | CLI prompt accepts commands per User Manual. | US4 |
+| FR-4 | Display the full board state, next player, remaining pieces, and undo credits. | `status` command prints board + metadata. | US5 |
+| FR-5 | Enforce Jungle movement and capture rules (rivers, traps, lions/tigers jumping, rat exceptions, dens, victory). | Illegal inputs rejected with clear messages; legal moves update board. | Appendix B |
+| FR-6 | Track and limit undo actions to three per player per game. | `undo [side]` reverts latest move until credits exhausted; after 3 uses, command is disabled for that side. | US6 |
+| FR-7 | Persist the full game snapshot to `.jungle` and reload it later. | `save-game`/`load-game` round-trip reproduces board, turn, undo counts, move log. | US9, US10 |
+| FR-8 | Record matches (players + ordered move list) to `.record`. | `export-record` writes JSON describing the match. | US7 |
+| FR-9 | Replay a `.record` file. | `replay-record` re-applies moves on a fresh board and prints intermediate boards. | US8 |
+| FR-10 | Maintain user-friendly error handling. | Invalid commands/moves emit messages without crashing. | SRS |
 
-F2. End game (US2)
-- FR-2.1: User can exit at any time with `quit|exit`.
+## 4. External Interface Requirements
+- **User Interface**: Text REPL with prompts, ASCII board rendering, and textual feedback. No GUI.
+- **File Interfaces**: JSON-based `.jungle` and `.record` files (UTF-8). File extensions validated.
+- **Hardware Interfaces**: Standard keyboard for input; display capable of showing ASCII board.
 
-F3. Player naming (US3)
-- FR-3.1: Users can set names via `name <p1> <p2>` or `name random`.
+## 5. Non-Functional Requirements
+| ID | Category | Description |
+|----|----------|-------------|
+| NFR-1 | Usability | Command syntax documented in the User Manual; `help` lists available commands. |
+| NFR-2 | Reliability | Game logic covered by automated unit tests with ≥80% line coverage inside `src/model`. |
+| NFR-3 | Performance | Command processing completes within 100 ms on a typical laptop (negligible CPU requirements). |
+| NFR-4 | Maintainability | Strict separation between `model` (logic) and `cli` (presentation). All rules reside in `model`. |
+| NFR-5 | Portability | Runs on any OS with Python 3.11+ without modification. |
+| NFR-6 | Integrity | Honour declaration records all GenAI usage; save/record files validate extensions to reduce accidental misuse. |
 
-F4. CLI gameplay (US4)
-- FR-4.1: REPL accepts commands listed in User Manual.
-- FR-4.2: Moves are validated against Jungle rules.
+## 6. System Constraints & Policies
+- Undo credits are non-transferable and reset only when a new game starts.
+- Files must use the prescribed extensions (`.jungle`, `.record`); other extensions trigger validation errors.
+- The game rejects attempts to move before starting (`new`) or after a winner is declared.
 
-F5. Show game status (US5)
-- FR-5.1: `show` prints all pieces and their positions, current player, and winner if any.
+## 7. Verification Plan (High-Level)
+- Unit tests under `tests/` cover move validation, undo budgeting, persistence round-trips, and victory checks.
+- Manual verification follows the User Manual scenarios (happy path, invalid input, save/load, replay).
 
-F6. Undo (US6)
-- FR-6.1: Each player may undo at most 3 times per game.
-- FR-6.2: Undo reverts last move (including restoring captured piece) and current player.
-
-F7. Record game (US7)
-- FR-7.1: `record start <file.record>` starts recording with player names.
-- FR-7.2: Each move is appended; `record stop` writes the file.
-
-F8. Replay record (US8)
-- FR-8.1: `replay <file.record>` replays moves from initial state and shows final board.
-
-F9. Save current game (US9)
-- FR-9.1: `save <file.jungle>` writes current state as JSON (pieces, player turn, names, undo counters).
-
-F10. Load game (US10)
-- FR-10.1: `load <file.jungle>` restores from JSON and continues play.
-
-## 4. Game Rules (Model Requirements)
-- R1 Movement: Orthogonal one step; lion/tiger may jump straight over rivers to next land unless a rat is on any intervening river square.
-- R2 Rivers: Only rats may enter river squares.
-- R3 Dens: A piece may not enter its own den.
-- R4 Captures: Higher rank captures lower/equal rank; rat may capture elephant; elephant may not capture rat.
-- R5 Water/land rat captures: A rat in water may not capture a piece on land (incl. elephant) or vice versa; rats may fight only if both on land or both in water.
-- R6 Traps: A piece may capture any enemy in one of the player's own trap squares regardless of rank.
-- R7 Win: Enter opponent's den OR capture all opponent pieces.
-
-## 5. Non-functional Requirements
-- NFR-1: Reliability — All rules enforced; unit tests pass.
-- NFR-2: Usability — Helpful error messages and `help` command.
-- NFR-3: Portability — Python 3.11+ on Windows, no 3rd-party deps.
-- NFR-4: Testability — Model isolated under `model/`, unit tests in `tests/`.
-- NFR-5: Performance — Commands respond within 100 ms on typical hardware.
-
-## 6. External Interface Requirements
-- CLI text input/output via standard stdin/stdout.
-- Filesystem read/write for `.jungle` (JSON) and `.record` (text).
-
-## 7. Acceptance Criteria
-- All US1–US10 demonstrably supported.
-- Unit tests pass with line coverage report for `model/`.
-- Developer and user manuals completed.
-
-## 8. Appendices
-- A: See `docs/Design.md` for architecture and diagrams.
-- B: See `docs/Requirements-Coverage.md` for coverage mapping.
+## 8. Traceability
+See `docs/RequirementsCoverage.md` for the mapping between FR/NFR IDs, user stories, and implementation/testing artifacts.

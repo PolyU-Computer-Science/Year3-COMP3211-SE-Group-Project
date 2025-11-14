@@ -1,0 +1,16 @@
+[project]
+name = "jungle-cli"
+version = "0.1.0"
+description = "Command-line Jungle (Dou Shou Qi) implementation for COMP3211 course project"
+requires-python = ">=3.11"
+dependencies = []
+
+[project.optional-dependencies]
+test = ["coverage"]
+
+[tool.coverage.run]
+source = ["src"]
+branch = true
+
+[tool.coverage.report]
+show_missing = true
