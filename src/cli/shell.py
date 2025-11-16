@@ -136,6 +136,8 @@ class JungleShell:
         if self.state.winner:
             print(
                 f"Game over! Winner: {self.state.player_names[self.state.winner]} ({self.state.winner.name})")
+        else:
+            self._cmd_status([])
 
     def _cmd_history(self, args: List[str]) -> None:
         count = int(args[0]) if args else 5
@@ -151,6 +153,7 @@ class JungleShell:
     def _cmd_undo(self, args: List[str]) -> None:
         side = self._parse_side(args[0]) if args else self.state.current_player
         self.state.undo(side)
+        self._cmd_status([])
         print(
             f"Last move undone. Undo credits left for {side.name}: {self.state.undo_remaining[side]}")
         self._cmd_status([])

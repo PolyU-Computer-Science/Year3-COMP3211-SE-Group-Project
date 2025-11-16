@@ -6,17 +6,36 @@ Command-line implementation of the Jungle (Dou Shou Qi) board game adhering to t
 
 ```
 ├── src/
-│   ├── main.py             # entry point (python -m src.main)
-│   ├── cli/                # shell, renderers, CLI utilities
-│   └── model/              # pure game logic & serialization helpers
-├── tests/                  # unittest-based model tests + coverage report
+│   ├── __init__.py
+│   ├── main.py                 # entry point (python -m src.main)
+│   ├── cli/                    # shell, renderers, CLI utilities
+│   │   ├── __init__.py
+│   │   ├── shell.py            # JungleShell REPL + commands
+│   │   ├── renderers.py        # ASCII board + status rendering
+│   │   └── utils.py            # parsing helpers, random names, file checks
+│   └── model/                  # pure game logic & serialization helpers
+│       ├── __init__.py
+│       ├── enums.py            # PlayerSide, PieceType, SquareType definitions
+│       ├── position.py         # board coordinates + a1-style notation
+│       ├── piece.py            # Piece dataclass + printing helpers
+│       ├── board.py            # rules for movement, capture, traps, rivers
+│       ├── game_state.py       # GameState, undo stack, victory detection
+│       ├── move.py             # Move record structure
+│       └── serialization.py    # .jungle save & .record export/import
+├── tests/                      # unittest-based model tests + coverage report
+│   ├── test_model.py           # unit tests for model layer
+│   └── COVERAGE.md             # latest model coverage snapshot
 ├── docs/
-│   ├── manuals/            # developer + user manuals
+│   ├── manuals/                # developer + user manuals
+│   │   ├── DeveloperManual.md
+│   │   └── UserManual.md
 │   ├── ImplementationPlan.md
 │   ├── SRS.md
 │   ├── DesignDocument.md
 │   ├── RequirementsCoverage.md
-│   └── HonourDeclaration.md (template)
+│   └── HonourDeclaration.md    # Honour declaration template
+├── pyproject.toml              # project metadata + coverage config
+├── .gitignore
 └── README.md
 ```
 
