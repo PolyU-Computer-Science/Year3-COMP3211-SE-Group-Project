@@ -25,15 +25,6 @@ Command-line implementation of the Jungle (Dou Shou Qi) board game adhering to t
 ├── tests/                      # unittest-based model tests + coverage report
 │   ├── test_model.py           # unit tests for model layer
 │   └── COVERAGE.md             # latest model coverage snapshot
-├── docs/
-│   ├── manuals/                # developer + user manuals
-│   │   ├── DeveloperManual.md
-│   │   └── UserManual.md
-│   ├── ImplementationPlan.md
-│   ├── SRS.md
-│   ├── DesignDocument.md
-│   ├── RequirementsCoverage.md
-│   └── HonourDeclaration.md    # Honour declaration template
 ├── pyproject.toml              # project metadata + coverage config
 ├── .gitignore
 └── README.md
@@ -78,4 +69,4 @@ While playing, use `help` inside the REPL to see every available command.
 
 ## Licence / Academic Integrity
 
-This codebase is for the COMP3211 group project.  Follow PolyU's Honour Declaration guidelines; if GenAI assistance is used beyond this scaffold, document it in `docs/HonourDeclaration.md` and the final submission package.
+This codebase is for the COMP3211 group project.  Follow PolyU's Honour Declaration guidelines.
