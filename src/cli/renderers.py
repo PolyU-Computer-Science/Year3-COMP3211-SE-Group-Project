@@ -30,7 +30,9 @@ def render_board(board: Board) -> str:
                 row_cells.append(SQUARE_SYMBOLS[board.square_type(position)])
         lines.append(f"{row + 1} | {' '.join(row_cells)}")
     footer = "    " + "  ".join(col.upper() for col in COLUMN_NAMES)
-    return "\n".join(lines + [footer])
+    top_label = "\t[BLUE side]"
+    bottom_label = "\t[RED side]"
+    return "\n".join([top_label] + lines + [footer, bottom_label])
 
 
 def render_status(board: Board) -> str:

@@ -26,8 +26,8 @@ Command-line implementation of the Jungle (Dou Shou Qi) board game adhering to t
 │   ├── test_model.py           # unit tests for model layer
 │   └── COVERAGE.md             # latest model coverage snapshot
 ├── pyproject.toml              # project metadata + coverage config
-├── .gitignore
-└── README.md
+├── README.md
+└── RequirementsCoverage.md
 ```
 
 ## Requirements
@@ -50,23 +50,3 @@ python -m coverage report --include "src/model/*"
 ```
 
 While playing, use `help` inside the REPL to see every available command.
-
-## Key Features
-
-- Full Jungle rule set (movement, rivers, traps, lion/tiger jumps, rat exceptions, den capture, elimination win condition)
-- MVC-style separation with an isolated `model` package for easier testing
-- Undo system enforcing **three** take-backs per player each game
-- Game state persistence to `.jungle` files and record/replay support for `.record` files
-- Printable board, piece lists, and recent move history directly in the CLI
-- Developer/user manuals plus SRS, design document, and requirement traceability artifacts under `docs/`
-
-## Contributing / Collaboration Notes
-
-1. Stick to the `src` layout and keep game logic within `src/model`.
-2. Before committing, run tests (`python -m unittest discover -s tests`).
-3. Update `docs/RequirementsCoverage.md` whenever new requirements are implemented.
-4. When editing documentation intended for DOC/PDF submission, convert Markdown into the requested format before uploading to Blackboard.
-
-## Licence / Academic Integrity
-
-This codebase is for the COMP3211 group project.  Follow PolyU's Honour Declaration guidelines.
